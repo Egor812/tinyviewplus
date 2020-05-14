@@ -27,6 +27,8 @@
 #define TVP_STR_ALT     "Alt"
 #endif /* TARGET_WIN32 TARGET_LINUX */
 #define DFLT_SYS_STAT   false
+#define TVP_VAL_PLUS    1
+#define TVP_VAL_MINUS   -1
 
 // settings
 #define SETTINGS_FILE   "settings.xml"
@@ -47,6 +49,10 @@
 #define BTTN_QUIT_FILE  "system/button_quit.png"
 #define BTTN_SETT_FILE  "system/button_settings.png"
 #define BTTN_WNDW_FILE  "system/button_window.png"
+
+// pilots
+#define PILOTS_FILE     "pilots/pilots.xml"
+#define PLT_PILOT_LABEL "pilot:label_"
 
 // camera profile
 #define CAM_FPV_FILE    "camera/fpv.xml"
@@ -281,6 +287,8 @@ void setupInit();
 void loadWallImage(string);
 void loadSettingsFile();
 void saveSettingsFile();
+void savePilotsFile();
+void loadPilotsFile();
 void loadCameraProfileFile();
 void updateInit();
 void drawInit();
@@ -288,7 +296,7 @@ void drawInit();
 void setupCamCheck();
 void updateCamCheck();
 void drawCamCheck();
-void keyPressedCamCheck();
+void keyPressedCamCheck(int);
 void reloadCameras();
 // -- main --
 // common
@@ -362,8 +370,10 @@ void pushLapRecord(int, float);
 void popLapRecord(int);
 void updateRacePositions();
 void toggleARLap();
-void changeMinLap();
-void changeRaceDuration();
+void changeMinLap(int);
+void changeRaceTime(int);
+void changeRaceLaps(int);
+void changeRaceTimeAndLaps();
 void toggleUseStartGate();
 void toggleLapAfterTimeout();
 // overlay - common
