@@ -282,6 +282,15 @@ public:
     void exit();
 };
 
+class tvpStat{
+public:
+    string pilot;
+    int pos;
+    int lps;
+    float total;
+
+};
+
 /* ---------- functions ---------- */
 
 // -- splash --
@@ -389,7 +398,7 @@ void drawLineBlock(int, int, int, int, int);
 void drawULineBlock(int, int, int, int, int);
 // overlay - race result
 void generateDummyData();
-void fwriteRaceResult();
+bool fwriteRaceResult(tvpStat[]);
 int getRaceResultPages();
 void processRaceResultDisplay();
 void drawRaceResult(int);

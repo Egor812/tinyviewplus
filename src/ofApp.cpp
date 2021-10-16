@@ -39,6 +39,7 @@ bool cameraFrameEnabled;
 int hideCursorTimer;
 // osc
 ofxOscReceiver oscReceiver;
+ofxOscSender oscSender;
 // language
 string lang[LANG_MAX_FILES];
 string currentlang = "en";
@@ -123,6 +124,7 @@ void setupInit() {
     raceResultPage = 0;
     // osc
     oscReceiver.setup(OSC_LISTEN_PORT);
+    oscSender.setup("127.0.0.1", OSC_LISTEN_PORT+1);
     // gamepad (GPAD_MAX_DEVS: 4)
     gamePad[0].setup(GLFW_JOYSTICK_1);
     gamePad[1].setup(GLFW_JOYSTICK_2);
@@ -410,7 +412,8 @@ void setupMain() {
     // debug
     if (DEBUG_ENABLED == true) {
         generateDummyData();
-        fwriteRaceResult();
+        tvpStat stat[cameraNum];
+        fwriteRaceResult(stat);
     }
 }
 
@@ -1464,7 +1467,7 @@ void ofApp::keyPressed(int key) {
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    
+
 }
 
 //--------------------------------------------------------------
@@ -1541,12 +1544,12 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mouseEntered(int x, int y){
-    
+
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseExited(int x, int y){
-    
+
 }
 
 //--------------------------------------------------------------
@@ -1564,12 +1567,12 @@ void ofApp::windowResized(int w, int h){
 
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg){
-    
+
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
-    
+void ofApp::dragEvent(ofDragInfo dragInfo){
+
 }
 
 //--------------------------------------------------------------
@@ -2256,6 +2259,7 @@ void recvOsc() {
         string method;
         oscReceiver.getNextMessage(oscm);
         addr = oscm.getAddress();
+        ofLogNotice() << addr;
         if (addr.find("/v1/camera/") == 0) {
             string str;
             int camid;
@@ -2293,6 +2297,32 @@ void recvOsc() {
                 continue;
             }
             recvOscSpeech(regex_replace(addr, regex("/v1/speech/|/say"), ""), oscm.getArgAsString(0));
+        }
+        else if (addr.find("/v1/setdurasecs") == 0) {
+            if (oscm.getNumArgs() != 1 ) {
+                continue;
+            }
+            stopRace(false);
+            raceDuraSecs = oscm.getArgAsInt(0) ;
+        }
+        else if (addr.find("/v1/setduralaps") == 0) {
+            if (oscm.getNumArgs() != 1 ) {
+                continue;
+            }
+            stopRace(false);
+            raceDuraLaps = oscm.getArgAsInt(0);
+        }
+        else if (addr.find("/v1/startrace") == 0) {
+            if (raceStarted == false) {
+                startRace();
+            }
+            else {
+                stopRace(false);
+                startRace();
+            }
+        }
+        else if (addr.find("/v1/finishrace") == 0) {
+                stopRace(false);
         }
     }
 }
@@ -2618,6 +2648,8 @@ void startRace() {
     if (raceStarted == true) {
         return;
     }
+        raceResultPage = 0;
+        setOverlayMode(OVLMODE_NONE);
     // stop/init -> start
     finishSound.stop();
     initRaceVars();
@@ -2632,6 +2664,7 @@ void startRace() {
 
 //--------------------------------------------------------------
 void stopRace(bool appexit) {
+    bool haveStat;
     if (raceStarted == false) {
         return;
     }
@@ -2643,7 +2676,23 @@ void stopRace(bool appexit) {
         speakAny(currentlang, xmlLang.getValue("lang:sayracefinish","Race finished"));
         raceResultTimer = ARAP_RSLT_DELAY;
     }
-    fwriteRaceResult();
+
+    tvpStat stat[cameraNum];
+    haveStat = fwriteRaceResult(stat);
+
+    // osc
+	ofxOscMessage m;
+	m.setAddress("/racefinished");
+    if( haveStat) {
+        for (int i = 0; i < cameraNum; i++) {
+            m.addStringArg( stat[i].pilot );
+            m.addIntArg( stat[i].pos );
+            m.addIntArg( stat[i].lps );
+            m.addFloatArg( stat[i].total );
+        }
+    }
+	oscSender.sendMessage(m, false);
+
 }
 
 //--------------------------------------------------------------
@@ -2848,9 +2897,9 @@ void updateRacePositions() {
 }
 
 //--------------------------------------------------------------
-void fwriteRaceResult() {
+bool fwriteRaceResult(class tvpStat stat[]) {
     if (isRecordedLaps() == false) {
-        return;
+        return false;
     }
     string timestamp = ofGetTimestampString();
     string newline;
@@ -2863,6 +2912,7 @@ void fwriteRaceResult() {
     string strlaph = "";
     string strlapb = "";
     string sep = "  ";
+    string result;
     int maxlap = 0;
 
     // Summary: Name Position Laps BestLap TotalTime
@@ -2890,6 +2940,13 @@ void fwriteRaceResult() {
         strsumm += ((blap == 0) ? "-.-" : getLapStr(blap)) + sep; // BestLap
         strsumm += ((total <= 0) ? "-:-.-" : getWatchString(total)) + sep; // TotalTime
         strsumm += newline;
+
+
+        stat[i].pilot = pilot;
+        stat[i].pos = pos;
+        stat[i].lps = lps;
+        stat[i].total = total;
+
     }
     strsumm += newline;
 
@@ -2939,11 +2996,14 @@ void fwriteRaceResult() {
     }
 
     // write to file
+    result = strsumm + strlaph + strlapb;
     resultsFile.open(ARAP_RESULT_DIR + timestamp + ".txt" , ofFile::WriteOnly);
-    resultsFile << (strsumm + strlaph + strlapb);
+    resultsFile << (result);
     resultsFile.close();
     // copy to clipboard
-    ofSetClipboardString(strsumm + strlaph + strlapb);
+    ofSetClipboardString(result);
+    return true;
+
 }
 
 //--------------------------------------------------------------
