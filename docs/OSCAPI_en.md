@@ -2,7 +2,21 @@
 
 Tiny View Plus can be controlled by OSC protocol. It receives OSC packet at UDP port 4000.
 
+In FixFly version Tiny View Plus can send OSC messages to 127.0.0.1 port 4001
+
 ## Message format
+
+### Set race duration in seconds - new in fixfly version!
+/v1/setdurasecs {time}
+
+### Set race duration in laps - new in fixfly version!
+/v1/setduralaps {laps}
+
+### Start race - new in fixfly version
+/v1/startrace
+
+### Send message when race is finished with race results
+/racefinished {pilotName 1} {position 1} {laps 1} {total time 1} ... {pilotName N} {position N} {laps N} {total time N}
 
 ### Set camera enhanced view on / off
 

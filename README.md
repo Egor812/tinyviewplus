@@ -1,5 +1,7 @@
 # Tiny View Plus
 
+Fixfly version. This is a fork of the McHeli's fork of the original t-asano's Tiny View Plus.
+
 日本語版ドキュメントは[こちら](./README_ja.md)。
 
 Tiny View Plus is a FPV multi-view and lap timing system. It works on PC with UVC compatible FPV receivers. Up to 4 receivers(\*) can be connected.
