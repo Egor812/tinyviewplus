@@ -1,5 +1,5 @@
 <lang id="ru" label="Русский" name="russain" locale="ru_RU" wincodepage="1251" winvoice="419" osxvoice="Milena">
-	<addlap>Добавить круг для камеры 1~4,1,3</addlap>
+	<addlap>Добавить круг для камеры 1~4</addlap>
         <bestlap>Лучший</bestlap>
         <bgimgnfound>Файл с фоном не найден</bgimgnfound>
 	<camera>Камера</camera>
@@ -7,8 +7,9 @@
 	<cancel>отменен</cancel>
 	<clrdraceres>Результаты гонки сброшены</clrdraceres>
 	<clrraceres>Сброс результатов гонки</clrraceres>
+	<rerace>Рестарт</rerace>
 	<cursorkeys>Клавиши курсора</cursorkeys>
-	<dellap>Удалить круг для камеры 1~4,1,3</dellap>
+	<dellap>Удалить круг для камеры 1~4</dellap>
 	<disabled>Отключено</disabled>
         <finish>Финиш</finish>
 	<hrs>ч</hrs>

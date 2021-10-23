@@ -13,7 +13,7 @@
 /* ---------- definitions ---------- */
 
 // system
-#define APP_VER         "v0.9.31 fixfly"
+#define APP_VER         "v0.9.31"
 #define DEBUG_ENABLED   false
 #define HELP_LINES      35  // must be <= OVLTXT_LINES
 #define SCENE_INIT      0
@@ -372,9 +372,10 @@ void keyPressedOverlayNone(int);
 void mouseReleasedOverlayNone(int, int, int);
 // race
 void toggleRace();
+void reRace();
 void initRaceVars();
 void startRace();
-void stopRace(bool);
+void stopRace(bool appexit, bool osc = true);
 bool isVariousPilots(int);
 bool isVariousPilotsAll();
 bool isRecordedLaps();

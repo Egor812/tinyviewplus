@@ -1,5 +1,5 @@
 <lang id="jp" label="日本人" name="japan" locale="ja_JP" wincodepage="932" winvoice="411" osxvoice="Kyoko">
-	<addlap>Add Lap at Camera 1~4,1,3</addlap>
+	<addlap>Add Lap at Camera 1~4</addlap>
 	<bestlap>BestLap</bestlap>
 	<bgimgnfound>Background image not found</bgimgnfound>
 	<camera>Camera</camera>
@@ -8,7 +8,7 @@
 	<clrdraceres>Race result cleared</clrdraceres>
 	<clrraceres>Clear Race Result</clrraceres>
 	<cursorkeys>Cursor Keys</cursorkeys>
-	<dellap>Delete Previous Lap at Camera 1~4,1,3</dellap>
+	<dellap>Delete Previous Lap at Camera 1~4</dellap>
 	<disabled>Disabled</disabled>
 	<finish>Finished</finish>
 	<hrs>h</hrs>
